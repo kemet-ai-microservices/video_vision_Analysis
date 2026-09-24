@@ -1,13 +1,42 @@
+# Video RAG runtime dependencies
+# Recommended Python version: 3.11
+#
+# OCR runs in the separate `ocr` service and is called over HTTP, so the
+# vLLM/FlashInfer/DotsOCR dependencies are intentionally not installed here.
+
+# Core ML and model loading
 --extra-index-url https://download.pytorch.org/whl/cu128
 torch==2.8.0
 torchvision==0.23.0
+torchaudio==2.8.0
+
+# MiniCPM-V 4.6 is supported natively starting with this release. Its local
+# config declares model_type=minicpmv4_6 and transformers_version=5.7.0.
 transformers==5.7.0
 huggingface-hub>=1.5,<2
 accelerate>=1.0,<2
+packaging>=24,<27
 sentencepiece>=0.2,<1
 protobuf>=5,<7
+
+
+# Speech recognition and diarization run in the separate ASR service.
+
+# Video, image, and audio processing
+numpy>=2.0,<2.4
+opencv-python==4.13.0.92
 Pillow>=11,<13
-fastapi>=0.115,<1
-uvicorn[standard]>=0.34,<1
-python-multipart>=0.0.20,<1
+ImageHash==4.3.1
+moviepy==2.2.1
+decord==0.6.0
+pytesseract==0.3.13
+
+# Runtime utilities and OCR HTTP client
 loguru==0.7.3
+numba>=0.61,<0.64
+psutil>=6,<8
+requests>=2.32,<3
+pytesseract==0.3.13
+tesseract==0.1.3
+
+#sudo apt install tesseract-ocr libtesseract-dev -y
