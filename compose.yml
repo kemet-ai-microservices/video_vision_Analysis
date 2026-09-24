@@ -8,11 +8,11 @@ services:
     ports:
       - "127.0.0.1:${XCLIP_PORT:-8200}:7000"
     environment:
-      XCLIP_MODEL_PATH: /models/xclip
+      XCLIP_MODEL_PATH: /models/xclip/snapshots/${XCLIP_MODEL_REVISION:?Set XCLIP_MODEL_REVISION in .env}
       XCLIP_DEVICE: cuda
       HF_HOME: /models/cache
     volumes:
-      - "${XCLIP_MODEL_PATH}:/models/xclip:ro"
+      - "${XCLIP_MODEL_PATH:?Set XCLIP_MODEL_PATH in .env}:/models/xclip:ro"
       - "${HF_CACHE_PATH:-./cache}:/models/cache"
     deploy:
       resources:
@@ -37,11 +37,11 @@ services:
     ports:
       - "127.0.0.1:${CAPTION_PORT:-8300}:7000"
     environment:
-      CAPTION_MODEL_PATH: /models/minicpm
+      CAPTION_MODEL_PATH: /models/minicpm/snapshots/${CAPTION_MODEL_REVISION:?Set CAPTION_MODEL_REVISION in .env}
       CAPTION_DEVICE_MAP: auto
       HF_HOME: /models/cache
     volumes:
-      - "${CAPTION_MODEL_PATH}:/models/minicpm:ro"
+      - "${CAPTION_MODEL_PATH:?Set CAPTION_MODEL_PATH in .env}:/models/minicpm:ro"
       - "${HF_CACHE_PATH:-./cache}:/models/cache"
     deploy:
       resources:

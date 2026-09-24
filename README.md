@@ -21,10 +21,12 @@ Confirm Docker GPU access first:
 docker run --rm --gpus all nvidia/cuda:12.8.0-base-ubuntu22.04 nvidia-smi
 ```
 
-Create the environment file and set the two existing model snapshot paths:
+Create the environment file and set the two existing Hugging Face model cache
+directories and snapshot revisions. Each model path must be the directory that
+contains `blobs`, `refs`, and `snapshots`, not the snapshot directory itself:
 
 ```bash
-cd gpu_services
+cd /mnt/data/projects/video_process/caption_class_service
 cp .env.example .env
 ```
 
