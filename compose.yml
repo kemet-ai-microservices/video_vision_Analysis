@@ -1,0 +1,58 @@
+services:
+  xclip:
+    build: .
+    image: video-vision-services:gpu
+    container_name: xclip-service
+    restart: unless-stopped
+    command: ["uvicorn", "app.xclip_main:app", "--host", "0.0.0.0", "--port", "7000", "--workers", "1"]
+    ports:
+      - "127.0.0.1:${XCLIP_PORT:-8200}:7000"
+    environment:
+      XCLIP_MODEL_PATH: /models/xclip
+      XCLIP_DEVICE: cuda
+      HF_HOME: /models/cache
+    volumes:
+      - "${XCLIP_MODEL_PATH}:/models/xclip:ro"
+      - "${HF_CACHE_PATH:-./cache}:/models/cache"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${XCLIP_GPU:-0}"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 300s
+
+  caption:
+    build: .
+    image: video-vision-services:gpu
+    container_name: minicpm-caption-service
+    restart: unless-stopped
+    command: ["uvicorn", "app.caption_main:app", "--host", "0.0.0.0", "--port", "7000", "--workers", "1"]
+    ports:
+      - "127.0.0.1:${CAPTION_PORT:-8300}:7000"
+    environment:
+      CAPTION_MODEL_PATH: /models/minicpm
+      CAPTION_DEVICE_MAP: auto
+      HF_HOME: /models/cache
+    volumes:
+      - "${CAPTION_MODEL_PATH}:/models/minicpm:ro"
+      - "${HF_CACHE_PATH:-./cache}:/models/cache"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ["${CAPTION_GPU:-0}"]
+              capabilities: [gpu]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7000/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 900s
