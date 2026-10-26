@@ -48,7 +48,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ["${CAPTION_GPU:-0}"]
+              device_ids: ["${CAPTION_GPU:-1}"]
               capabilities: [gpu]
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:7000/health', timeout=5)"]
