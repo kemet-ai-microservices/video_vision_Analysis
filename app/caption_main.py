@@ -20,6 +20,7 @@ class MiniCPMCaptionEngine:
         self.model_path = os.environ.get(
             "CAPTION_MODEL_PATH", "openbmb/MiniCPM-V-4.6"
         )
+        self.model_name = os.environ.get("CAPTION_MODEL_NAME", "MiniCPM")
         self.processor = None
         self.model = None
         self.lock = threading.Lock()
@@ -108,6 +109,7 @@ async def health() -> dict:
         "status": "ok",
         "service": "minicpm-caption",
         "model": engine.model_path,
+        "model_name": engine.model_name,
         "device": device,
         "ready": engine.model is not None,
     }
@@ -141,4 +143,8 @@ async def caption(
         if temporary_path:
             Path(temporary_path).unlink(missing_ok=True)
 
-    return {"caption": result, "model": engine.model_path}
+    return {
+        "caption": result,
+        "model": engine.model_path,
+        "model_name": engine.model_name,
+    }
